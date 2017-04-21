@@ -1,6 +1,10 @@
 ## React实现图片画廊效果
 初学React， 用这个小项目练练手
 
+慕课网课程：![](http://www.imooc.com/learn/507)
+
+demo地址 ![](https://wanglei-0707.github.io/gallery-by-react/)
+
 ## 技术栈
 React + scss + yeoman + generator-react-webpack
 
@@ -10,6 +14,7 @@ npm install -g generator-react-webpack
 mkdir my-new-project && cd my-new-project
 yo react-webpack
 npm run serve
+npm run dist //打包
 ```
 
 ## scss
@@ -37,7 +42,71 @@ perspective + transform-origin + transform-style + transform: rotateY + backface
 3. backface-visibility: visible | hidden 定义当元素不面向屏幕时元素是否可见
 
 ## react
-1. this.refs VS ReactDOM.fingDOMNode()
+### this.refs
+使用this.refs的情况：
+* 管理focus，text selection， media playback
+* 触发必要的动画
+* 整合第三方DOM库
+#### 添加ref到一个DOM元素上
+为ref指定一个回调函数，这个回调函数会在组件mounted或者unmouted之后立即执行。当ref被使用在一个HTML元素上时，ref指定的回调函数接收当前的DOM元素作为参数。官网例子：
+```
+class CustomTextInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.focus = this.focus.bind(this);
+  }
+
+  focus() {
+    // Explicitly focus the text input using the raw DOM API
+    **this.textInput.focus();**
+  }
+
+  render() {
+    // Use the `ref` callback to store a reference to the text input DOM
+    // element in an instance field (for example, this.textInput).
+    return (
+      <div>
+        <input
+          type="text"
+          **ref={(input) => { this.textInput = input; }} />**
+        <input
+          type="button"
+          value="Focus the text input"
+          onClick={this.focus}
+        />
+      </div>
+    );
+  }
+}
+```
+#### 添加ref到一个类组件上
+当ref应用在一个本地类组件上，ref的回调函数接收这个组件的mouted组件实例作为参数。注意，只有当CustomTextInput被声明为一个类时才有作用。当需要使用该组件对应的DOM节点时，可以通过ReactDOM.findDOMNode()方法获得
+```
+class AutoFocusTextInput extends React.Component {
+  componentDidMount() {
+    this.textInput.focus();
+  }
+
+  render() {
+    return (
+      <CustomTextInput
+        ref={(input) => { this.textInput = input; }} />
+    );
+  }
+}
+```
+#### 官网不建议使用的String ref
+教程中使用的ref为字符串的方式现在官网已经不建议使用
+#### 警告
+如果ref的callback被定义为inline function，这个函数在updates期间将被调用两次，一次参数为null，一次参数为DOM元素，这是因为每次render都会创建一个新的function实例，所以React需要清除旧的ref然后设置新的。可以将ref的callback定义为class内部的方法来避免这种情况，但是大多数情况下这个问题并不会有什么影响。
+
+### ReactDOM.findDOMNode(component)
+如果component已经mounted into DOM中，这个函数会返回一个响应的本地浏览器DOM元素，这个方法在读取DOM的value时很有用，比如表单字段的值。但是大多数情况下，都可以使用ref来避免使用findDOMNode。当render返回null或者false时，findDOMNode返回null。
+
+ref={(section)=>{this.section = section}}
+ref={(figure)=>{this['figure'+index] = figure;}}
+ref={'figure'+index}
+ref="stage"
 
 2. ES6写法的组件事件处理函数，状态设置
 ```
@@ -59,6 +128,16 @@ class ControllerUnit extends React.Component {
     }
 }
 ```
+### 如何获取组件中的真实DOM元素。
+教程中原本使用ReactDOM.findDOMNode()方法将虚拟DOM转为真实的DOM，但是我看官网中对findDOMNode()方法的介绍中写道，大多数情况下都可以用ref callback来替代findDOMNode，但是当ref用在一个类组件上时，获得的也是组件的虚拟DOM不是真实DOM，所以我还是得用findDOMNode()来转为真实的DOM。网上也很多说是用这个函数，不知道这种处理方法合不合适。
+
+## git相关
+之前使用git-pages都是在GitHub官网上的settings里设置，课程里讲到了使用如下命令可以直接将dist文件夹push到gh-pages分支上
+```
+git subtree push --prefix=<子目录名> <远程分支名> 分支
+git subtree push --prefix=dist origin gh-pages
+```
+要注意的一个问题是直接推上去后访问会存在路径不对的问题，需要修改cfg文件夹下的defaults.js文件里的publicPath，将'/assets/'改为'assets/'即可
 
 ## 遇到的问题
 1. Error: listen EACCES 127.0.0.1:8000    

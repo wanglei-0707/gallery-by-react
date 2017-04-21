@@ -184,8 +184,8 @@ class GalleryByReactApp extends React.Component {
     // 计算各个分区放置图片的坐标范围
     componentDidMount () {
         var constant = this.constant,
-            stageDOM = this.refs.stage,
-            figureDOM = ReactDOM.findDOMNode(this.refs.figure0),
+            stageDOM = this.section,
+            figureDOM = ReactDOM.findDOMNode(this.figure0),
             stageW = stageDOM.scrollWidth,
             stageH = stageDOM.scrollHeight,
             halfStageW = Math.floor(stageW / 2),
@@ -223,7 +223,7 @@ class GalleryByReactApp extends React.Component {
             imgFigures.push(<ImgFigure
                                 data={img}
                                 key={'imgFigure'+index}
-                                ref={'figure'+index}
+                                ref={(figure)=>{this['figure'+index] = figure;}}
                                 arrange={this.state.imgsArrangeArr[index]}
                                 reverse={this.figureReverse(index)}
                                 center={this.center(index)}
@@ -237,7 +237,7 @@ class GalleryByReactApp extends React.Component {
         });
         return (
             <section className="stage">
-                <section className="img-sec" ref="stage">
+                <section className="img-sec" ref={(section)=>{this.section = section}}>
                     {imgFigures}
                 </section>
                 <nav className = "controller-nav">
