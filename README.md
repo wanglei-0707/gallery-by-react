@@ -1,9 +1,9 @@
 ## React实现图片画廊效果
 初学React， 用这个小项目练练手
 
-慕课网课程：![](http://www.imooc.com/learn/507)
+[慕课网课程](http://www.imooc.com/learn/507)
 
-demo地址 ![](https://wanglei-0707.github.io/gallery-by-react/)
+[点我看demo](https://wanglei-0707.github.io/gallery-by-react/)
 
 ## 技术栈
 React + scss + yeoman + generator-react-webpack
