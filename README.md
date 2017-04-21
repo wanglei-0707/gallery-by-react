@@ -137,7 +137,9 @@ class ControllerUnit extends React.Component {
 git subtree push --prefix=<子目录名> <远程分支名> 分支
 git subtree push --prefix=dist origin gh-pages
 ```
-要注意的一个问题是直接推上去后访问会存在路径不对的问题，需要修改cfg文件夹下的defaults.js文件里的publicPath，将'/assets/'改为'assets/'即可
+要注意的一个问题是直接推上去后访问会存在路径不对的问题，如果cfg文件夹下的defaults.js文件里的publicPath设置为'/assets/'，则index.html中引用外部文件时使用的路径应为"assets/app.js"。
+
+webpack配置中path仅仅告诉webpack打包的结果存储在哪里，而publicPath指定资源引用的目录
 
 ## 遇到的问题
 1. Error: listen EACCES 127.0.0.1:8000    
